@@ -6,4 +6,8 @@ Projeto original: Humberto Barros
 
 ## Creational
 ### Factory Method
-Implementado. Permite uma criação mais simples de usuários (tutor ou estudante), facilitando o loop e manutenção de dados.
+Implementado em users > final.py . Permite uma criação mais simples de usuários (tutor ou estudante), facilitando o loop e manutenção de dados.
+
+## Structural
+### Composite
+Implementado em classes > turmas.py . Os dias da semana eram tratados da mesma maneira porem separadamente, portanto foi criado a classe WeekSchedule para um tratamento mais uniforme, ajudando tamb´me na manutenção futura.
