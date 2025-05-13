@@ -3,8 +3,8 @@ from classes.turmas import *
 from dados.dados import *
 import os
 # --- Dados ---
-a1 = classes('a1')
-timetable1 = timetable('1A', 'vague', 'vague', 'vague', 'vague', 'vague')
+a1 = classes('a1') #unica turma criada
+timetable1 = timetable('1A', 'vague', 'vague', 'vague', 'vague', 'vague') #horarios de aula dela
 classes_bank = {a1.classname: a1}
 extra_classes_bank = {}
 
@@ -39,7 +39,7 @@ def authenticate(user_dict, username, password):
         else:
             print(f" {username} (Type: {user_type}) tried to log in, but the password is incorrect!.\n")
             return None
-    print("⚠️ Usuário não encontrado!\n")
+    print("User not found!\n")
     return None
 
 class terminal:
@@ -70,10 +70,12 @@ class terminal:
                         return False
                     case 'n':
                         pass
+        
             #O usuario pode ser levado a dois tipos de portais diferentes, dependendo do tipo.
             elif authenticate(users_bank, name_user, password_user) == 'tutor':
                 self.clear()
                 self.tutor()
+
             elif authenticate(users_bank, name_user, password_user) == 'student':
                 self.clear()
                 self.student(users_bank[name_user].name)
@@ -83,54 +85,63 @@ class terminal:
         while True:
             print("Hello, what would you like to do?")
             print("0 - Quit")
-            print("1 - Enroll students")
-            print('2 - Daily attendance')
-            print('3 - Create a class')
-            print('4 - Timetable manager')
-            print('5 - Add exam')
-            print('6 - Add subject in gradebook')
-            print('7 - Edit gradebook')
-            print('8 - Create a new extra class.')
-            print('9 - Assign a student to a new extra class.')
+            print("1 - Enroll students") #cadastra estudantes
+            print('2 - Daily attendance') #presença
+            print('3 - Create a class') #cria uma turma
+            print('4 - Timetable manager') #altera os horários de um dia
+            print('5 - Add exam') #adiciona uma prova <---------------------REVER
+            print('6 - Add subject in gradebook') #adiciona uma matéria no boletim de um aluno
+            print('7 - Edit gradebook') #altera a nota no boletim do aluno.
+            print('8 - Create a new extra class.') #cria uma turma extra-curricular
+            print('9 - Assign a student to a new extra class.') #coloca um aluno em uma turma extra-curricular
 
             choice = input('action: ')
             match choice:
-                case '0':
-                    return False  # Sai do menu tutor e volta ao portal
-                case '1':
+                case '0': # Sai do menu tutor e volta ao portal
+                    return False
+            
+                case '1': #cadastro de estudantes
                     self.clear()
                     self.enroll_students()
-                case '2':
+
+                case '2': #presença
                     self.clear()
                     self.attendance()
-                case '3':
+
+                case '3': #criação de turma
                     self.clear()
                     self.create_class()
-                case '4':
+
+                case '4': #altera os horários de um dia
                     self.clear()
                     class_name = input('Class name: ')
-                    classes_bank[class_name].edit()
-                case '5':
+                    classes_bank[class_name].edit_day()
+            
+                case '5': #adiciona uma prova
                     self.clear()
                     class_name = input('Class name: ')
                     exam_matter = input('Exam matter: ')
                     exam_date = input('Exam date: ')
                     classes_bank[class_name].add_exams(exam_matter, exam_date)
-                case '6':
+
+                case '6': #adiciona uma matéria no boletim de um aluno
                     self.clear()
                     student_name = input('Student name:')
                     matter_name = input('Matter name: ')
                     users_bank[student_name].add_note(matter_name)
-                case '7':
+                
+                case '7': #altera a nota no boletim do aluno.
                     self.clear()
                     student_name = input('Student name:')
                     matter_name = input('Matter name: ')
                     users_bank[student_name].edit_note(matter_name)
-                case '8':
+            
+                case '8': #cria uma turma extra-curricular
                     name_extra_class = input('Name extra class: ')
                     new_class = classes(name_extra_class)
                     extra_classes_bank[name_extra_class] = new_class
-                case '9':
+            
+                case '9': #coloca um aluno em uma turma extra-curricular
                     name_extra_class = input('Name extra class: ')
                     if name_extra_class in extra_classes_bank:
                         student_name = input('Student name: ')
@@ -145,21 +156,28 @@ class terminal:
                     print('Invalid option')
 
     def enroll_students(self):
-        new_name = input('Student name: ')
-        while True:
+        """
+        Cadastro de estudantes.
+        """
+        new_name = input(f"Student's name: ")
+        while True: #procura a turma para cadastra-lo
             new_classe = input('Class: ')
             if new_classe in classes_bank:
                 break
             else:
                 print('Class not found')
-        new_installments = int(input('installments paid: '))
-        new_password = '0000'
+    
+        new_installments = int(input('installments paid: ')) #parcelas já pagas
+        new_password = '0000' #senha padrão
         new_student = student(new_name, new_password, 0, new_classe, 12 - new_installments)
         users_bank[new_name] = new_student
         classes_bank[new_classe].add_student(new_name)
         new_student.show()
 
     def attendance(self):
+        """
+        Presença. Mostra o nome da turma, os alunos e vai iterando cada um.
+        """
         name_class = input('Name class: ')
 
         if name_class not in classes_bank:
@@ -173,8 +191,10 @@ class terminal:
             absence = input('Present? yes(1) or no (0)? ')
             users_bank[student_name].daily_attendance(absence)
 
-
     def create_class(self):
+        """
+        Criação de uma turma.
+        """
         new_classename = input('Class name: ')
         new_classe = classes(new_classename)
         classes_bank[new_classename] = new_classe
@@ -182,26 +202,27 @@ class terminal:
 # ----------------Student portal----------------
     def student(self, code):
         while True:
-            print('Press 0 for quit')
-            print('Press 1 for see informations')
-            print('Press 2 for see gradebook')
-            print('Press 3 for edit password')
+            print("Hello, what would you like to do?")
+            print('0 - Quit')
+            print('1 - See Informations') #mostra as informações do aluno.
+            print('2 - See gradebook') #mostra o boletim
+            print('3 - Edit password') #altera a senha
 
             choice = input('action: ')
+            self.clear()
             match choice:
-                case '0':
-                    self.clear()
-                    break  # Sai do menu aluno e volta ao portal
-                case '1':
-                    self.clear()
+                case '0': # Sai do menu aluno e volta ao portal
+                    break
+            
+                case '1': #mostra as informações do aluno.
                     users_bank[code].show()
-                case '2':
-                    self.clear()
+            
+                case '2': #mostra o boletim
                     users_bank[code].show_note()
-                case '3':
-                    self.clear()
+            
+                case '3': #altera a senha
                     new_password = input('New password: ')
                     users_bank[code].edit_password(new_password)
+            
                 case _:
-                    self.clear()
                     print('Invalid option')
