@@ -1,63 +1,23 @@
 class classes():
     def __init__(self, classname):
         self.classname = classname
-        self.fixed = {'Monday': Monday, 'Tuesday': Tuesday, 'Wednesday': Wednesday, 'Thursday': Thursday, 'Friday': Friday}
+        self.schedule = WeekSchedule()
         self.exams = {}
         self.students = []
+
     def show(self):
-        self.fixed['Monday'].show()
-        self.fixed['Tuesday'].show() 
-        self.fixed['Wednesday'].show() 
-        self.fixed['Tuesday'].show() 
-        self.fixed['Friday'].show()
-    def edit(self):
+        self.schedule.show_all()
+
+    def edit_day(self):
         while True:
-            choice = input('Choose the day or 0 for quit: ')
-            match choice.lower():
-                case '0':
-                    return False
-                case 'monday':
-                    while True:
-                        self.fixed['Monday'].show()
-                        time = input('Choose the time or 0 for quit: ')
-                        if time == '0':
-                            break
-                        else:
-                            self.fixed['Monday'].edit(time.lower())
-                case 'tuesday':
-                    while True:
-                        self.fixed['Tuesday'].show()
-                        time = input('Choose the time or 0 for quit: ')
-                        if time == '0':
-                            break
-                        else:
-                            self.fixed['Tuesday'].edit(time.lower())
-                case 'wednesday':
-                    while True:
-                        self.fixed['Wednesday'].show()
-                        time = input('Choose the time or 0 for quit: ')
-                        if time == '0':
-                            break
-                        else:
-                            self.fixed['Wednesday'].edit(time.lower())
-                case 'tuesday':
-                    while True:
-                        self.fixed[Tuesday].show()
-                        time = input('Choose the time or 0 for quit: ')
-                        if time == '0':
-                            break
-                        else:
-                            self.fixed[Tuesday].edit(time.lower())
-                case 'friday':
-                    while True:
-                        self.fixed['Friday'].show()
-                        time = input('Choose the time or 0 for quit: ')
-                        if time == '0':
-                            break
-                        else:
-                            self.fixed['Friday'].edit(time.lower())
+            choice = str(input('Choose the day or 0 for quit: ')).lower()
+            if choice == '0':
+                break
+            self.schedule.edit_day(choice)
+
     def add_student(self, student_name):
         self.students.append(student_name)
+
     def add_exams(self, exams_matter, date):
         self.exams[exams_matter] = date
 
@@ -145,8 +105,32 @@ class timetable:
         print(f'Fourth: {self.fourth}')
         print(f'Fifth: {self.fifth}')   
 
-Monday = timetable('Monday', 'vague', 'vague', 'vague', 'vague', 'vague')
-Tuesday = timetable('Tuesday', 'vague', 'vague', 'vague', 'vague', 'vague')
-Wednesday = timetable('Wednesday', 'vague', 'vague', 'vague', 'vague', 'vague')
-Thursday = timetable('Thursday', 'vague', 'vague', 'vague', 'vague', 'vague')
-Friday = timetable('Friday', 'vague', 'vague', 'vague', 'vague', 'vague')
+
+#padrão composite, antes os dias eram tratados separadamente em 'classes' de maneira semelhante, portanto foi adicionado esse padrão
+#para melhorar o funcionamento e manutenção, caso seja nescessário adicionar um novo dia como sábado por exemplo ou adicionar novas funcionalidades aos dias.
+class WeekSchedule:
+    def __init__(self):
+        self.days ={
+            'monday': timetable('Monday', 'vague', 'vague', 'vague', 'vague', 'vague'),
+            'tuesday': timetable('Tuesday', 'vague', 'vague', 'vague', 'vague', 'vague'),
+            'wednesday': timetable('Wednesday', 'vague', 'vague', 'vague', 'vague', 'vague'),
+            'thursday': timetable('Thursday', 'vague', 'vague', 'vague', 'vague', 'vague'),
+            'friday': timetable('Friday', 'vague', 'vague', 'vague', 'vague', 'vague')
+        }
+
+    def show_all(self):
+        for day in self.days.values():
+            day.show()
+    def edit_day(self, day_name):
+        day = self.days.get(day_name.lower())
+
+        if not day:
+            print("Invalid day or day name.")
+            return
+        
+        while True:
+            day.show()
+            time = input('Choose the time or 0 to quit: ')
+            if time == '0':
+                break
+            day.edit(time.lower())
