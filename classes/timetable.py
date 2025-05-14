@@ -16,10 +16,6 @@ class Timetable:
         print(f"{classname}: {self.day}")
         for time, subject in self.schedule.items():
             print(f"{time.capitalize()}: {subject}")
-
-    def edit(self, time):
-        cmd = Edit_Time_Command(self, time)
-        self.editor.execute_command(cmd)
     
     def update(self, time, subject):
         if time in self.schedule:
@@ -29,6 +25,13 @@ class Timetable:
         else:
             input(f"Invalid {time}. Press enter to continue.")
 
+    def edit(self, time):
+        cmd = Edit_Time_Command(self, time)
+        self.editor.execute_command(cmd)
+    
+    def undo(self):
+        self.editor.undo_last()
+
 """
 A seguir tem uma implementação do padrão comportamental Command.
 """
@@ -36,6 +39,10 @@ A seguir tem uma implementação do padrão comportamental Command.
 class Command(metaclass=ABCMeta):
     @abstractmethod
     def execute(self):
+        pass
+    
+    @abstractmethod
+    def undo(self):
         pass
 
 class Edit_Time_Command(Command):
@@ -56,6 +63,13 @@ class Edit_Time_Command(Command):
             else:
                 input("Operation cancelled. Press enter to continue.")
 
+    def undo(self):
+        if self.previous_subject is not None:
+            self.timetable.update(self.time, self.previous_subject)
+            input(f"Undo complete. Restored {self.time} to {self.previous_subject}. Press enter to continue.")
+        else:
+            input("Nothing to undo. Press enter to continue.")
+
 class Editor():
     def __init__(self):
         self.history = []
@@ -63,4 +77,11 @@ class Editor():
     def execute_command(self, command: Command):
         command.execute()
         self.history.append(command)
+    
+    def undo_last(self):
+        if self.history:
+            last_command = self.history.pop()
+            last_command.undo()
+        else:
+            input("No actions to undo. Press enter to continue.")
 
