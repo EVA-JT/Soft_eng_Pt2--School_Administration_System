@@ -14,8 +14,8 @@ for class_id, class_data in turmas.items():
     classname = class_data
     classes_bank[classname] = classes(classname)
     
-classes_bank['a1'].add_student(users_bank['joao'].name)
-classes_bank['a1'].add_student(users_bank['arthur'].name)
+classes_bank['5th grade'].add_student(users_bank['joao'].name)
+classes_bank['5th grade'].add_student(users_bank['arthur'].name)
 # ---
 
 def authenticate(user_dict, username, password):
@@ -75,6 +75,7 @@ class terminal:
 # -----------------Tutor portal-----------------
     def tutor(self):
         while True:
+            self.clear()
             print("Hello, what would you like to do?")
             print("0 - Quit")
             print("1 - Enroll students") #cadastra estudantes
@@ -86,6 +87,7 @@ class terminal:
             print('7 - Edit gradebook') #altera a nota no boletim do aluno.
             print('8 - Create a new extra class.') #cria uma turma extra-curricular
             print('9 - Assign a student to a new extra class.') #coloca um aluno em uma turma extra-curricular
+            print("10 - Show class information.")
 
             choice = input('action: ')
             match choice:
@@ -107,14 +109,28 @@ class terminal:
                 case '4': #altera os horários de um dia
                     self.clear()
                     class_name = input('Class name: ')
-                    classes_bank[class_name].edit_day()
+                    opt = int(input("Extra(1) or Normal(2) class?\n"))
+                    action = int(input("Edit(1) or Undo a edit(2)?\n"))
+                    if opt == 1:
+                        if action == 1:
+                            extra_classes_bank[class_name].edit_day()
+                        elif action == 2:
+                            extra_classes_bank[class_name].undo()
+                    elif opt == 2:
+                        if action == 1:
+                            classes_bank[class_name].edit_day()
+                        elif action == 2:
+                            classes_bank[class_name].undo()
             
                 case '5': #adiciona uma prova
                     self.clear()
                     class_name = input('Class name: ')
-                    exam_matter = input('Exam matter: ')
-                    exam_date = input('Exam date: ')
-                    classes_bank[class_name].add_exams(exam_matter, exam_date)
+                    if class_name not in classes_bank:
+                        input("Invalid class name. Press enter to continue.")
+                    else:
+                        exam_matter = input('Exam matter: ')
+                        exam_date = input('Exam date: ')
+                        classes_bank[class_name].add_exams(exam_matter, exam_date)
 
                 case '6': #adiciona uma matéria no boletim de um aluno
                     self.clear()
@@ -138,11 +154,21 @@ class terminal:
                     if name_extra_class in extra_classes_bank:
                         student_name = input('Student name: ')
                         if student_name in users_bank:
-                            extra_classes_bank.add_student(student_name)
+                            extra_classes_bank[name_extra_class].add_student(student_name)
                         else:
-                            print('Student not found')
+                            input('Student not found. Press enter to continue')
                     else:
-                        print('Class not found')
+                        print('Class not found. Press enter to continue')
+                
+                case '10': #printa as informações de uma turma
+                    self.clear()
+                    class_name = input('Class name: ')
+                    opt = int(input("Extra(1) or Normal(2) class?\n"))
+                    if opt == 1:
+                        extra_classes_bank[class_name].show()
+                    elif opt == 2:
+                        classes_bank[class_name].show()
+
                 case _:
                     self.clear()
                     print('Invalid option')
@@ -196,9 +222,10 @@ class terminal:
         while True:
             print("Hello, what would you like to do?")
             print('0 - Quit')
-            print('1 - See Informations') #mostra as informações do aluno.
-            print('2 - See gradebook') #mostra o boletim
-            print('3 - Edit password') #altera a senha
+            print("1 - See student's informations") #mostra as informações do aluno.
+            print("2 - See classes' information.")
+            print('3 - See gradebook') #mostra o boletim
+            print('4 - Edit password') #altera a senha
 
             choice = input('action: ')
             self.clear()
@@ -208,11 +235,19 @@ class terminal:
             
                 case '1': #mostra as informações do aluno.
                     users_bank[code].show()
-            
-                case '2': #mostra o boletim
+                case '2':
+                    self.clear()
+                    class_name = input('Class name: ')
+                    opt = int(input("Extra(1) or Normal(2) class?\n"))
+                    if opt == 1:
+                        extra_classes_bank[class_name].show()
+                    elif opt == 2:
+                        classes_bank[class_name].show()
+
+                case '3': #mostra o boletim
                     users_bank[code].show_note()
             
-                case '3': #altera a senha
+                case '4': #altera a senha
                     new_password = input('New password: ')
                     users_bank[code].edit_password(new_password)
             
