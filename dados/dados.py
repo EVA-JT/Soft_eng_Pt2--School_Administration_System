@@ -12,5 +12,5 @@ users = { #banco de usuarios
 }
 
 turmas = { #banco de turmas
-    1:("a1")
+    1:("5th grade")
 }
