@@ -68,7 +68,7 @@ class student(user):
         """
         matter = note(matter_name, 0, 0)
         self.__gradebook[matter_name] = matter
-        self.__gradebook[matter_name].show()
+        #self.__gradebook[matter_name].show()
     
     def edit_note(self, matter):
         self.__gradebook[matter].show()
@@ -107,7 +107,9 @@ class note:
             new_ab2 = input('ab2 new note: ')
             self.__ab2 == new_ab2
 
-
+"""
+Implementação do padrão criacional Factory.
+"""
 class Factory:
     def meet_the_constructor(type, name, password, *args):
         if type == "tutor":
