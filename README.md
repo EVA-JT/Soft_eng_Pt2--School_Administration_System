@@ -10,4 +10,8 @@ Implementado em users > final.py . Permite uma criação mais simples de usuári
 
 ## Structural
 ### Composite
-Implementado em classes > turmas.py . Os dias da semana eram tratados da mesma maneira porem separadamente, portanto foi criado a classe WeekSchedule para um tratamento mais uniforme, ajudando tamb´me na manutenção futura.
+Implementado em classes > turmas.py . Os dias da semana eram tratados da mesma maneira porem separadamente, portanto foi criado a classe WeekSchedule para um tratamento mais uniforme, ajudando também na manutenção futura.
+
+## Behavioral
+### Command
+Implementado em classes > timetamble.py. As ações para editar cada horário de cada dia eram feitas a partir de if e elses, portanto foi criado as classes Command, Edit_Time_Command e Editor para cuidar dessas ações, simplificando o processo, facilitando a manutenção e expansão e com uma nova funcionalidade de desfazer edições.
