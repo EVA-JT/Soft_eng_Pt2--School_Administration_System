@@ -2,33 +2,25 @@ from users.final import *
 from classes.turmas import *
 from dados.dados import *
 import os
-# --- Dados ---
-a1 = classes('a1') #unica turma criada
-timetable1 = timetable('1A', 'vague', 'vague', 'vague', 'vague', 'vague') #horarios de aula dela
-classes_bank = {a1.classname: a1}
-extra_classes_bank = {}
 
-users_bank = {}
+# --- Dados ---
 for user_id, user_data in users.items():
     tipo, nome, senha, *args = user_data
     users_bank[nome] = Factory.meet_the_constructor(tipo, nome, senha, *args)
 
 users_bank['joao'].add_note('math')
-a1.add_student(users_bank["joao"].name)
-a1.add_student(users_bank["arthur"].name)
+
+for class_id, class_data in turmas.items():
+    classname = class_data
+    classes_bank[classname] = classes(classname)
+    
+classes_bank['a1'].add_student(users_bank['joao'].name)
+classes_bank['a1'].add_student(users_bank['arthur'].name)
 # ---
 
 def authenticate(user_dict, username, password):
     """
     Faz o login do cliente, podendo ser um estudante ou tutor.
-
-    :param:`user_dict`: Dicionario com as instancias de cada usuário cadastrado.
-
-    :param:`username`: Nome do cliente.
-    
-    :param:`password`: Senha do cliente.
-
-    :return: Retorna ou None ou o tipo do objeto do cliente logado (:obj:`student` ou :obj:`tutor`)
     """
     user = user_dict.get(username)
     if user:

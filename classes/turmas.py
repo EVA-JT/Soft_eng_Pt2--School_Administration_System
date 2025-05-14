@@ -1,14 +1,35 @@
+from timetable import *
+
 class classes():
+    
     def __init__(self, classname):
         self.classname = classname
+
         self.schedule = WeekSchedule()
+        self.edit_day()
+
         self.exams = {}
         self.students = []
 
     def show(self):
+        """
+        Printa as informações da turma.
+        """
+        print(f"{self.classname}")
+        print(f"Students: {self.students}")
+        print(f"Exams: {self.exams}")
+        self.schedule.show_all()
+
+    def show_schedule(self):
+        """
+        Printa os horários da turma
+        """
         self.schedule.show_all()
 
     def edit_day(self):
+        """
+        Escolhe o dia para uma alteração de horário.
+        """
         while True:
             choice = str(input('Choose the day or 0 for quit: ')).lower()
             if choice == '0':
@@ -123,7 +144,6 @@ class WeekSchedule:
             day.show()
     def edit_day(self, day_name):
         day = self.days.get(day_name.lower())
-
         if not day:
             print("Invalid day or day name.")
             return
